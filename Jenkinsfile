@@ -1,21 +1,26 @@
- pipeline {
-    agent {label 'docker' }
+
+pipeline {
+    agent any
+    
     stages {
         stage('Clone') {
             steps {
                 git branch: 'main', url:'https://github.com/htrungngx/WebApp_pipeline.git'
             }
         }
-        stage('Docker build ') {
+        
+        stage('Docker build') {
             steps {
                 script {
-                    sh 'docker build -t dckb9xz/webpipeline:v1 .'
-
+                    docker.withTool('docker') {
+                        docker.withRegistry('repo', 'credentials') {
+                            sh 'docker build -t dckb9xz/webpipeline:v1 .'
+                        }
+                    }
                 }
-                }
-            
-            
+            }
         }
     }
+}
 
- }
+
